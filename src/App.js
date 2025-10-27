@@ -42,10 +42,13 @@ function BillInput({ bill, onSetBill }) {
     <div>
       <label>How much was the bill?</label>
       <input
-        type="text"
-        placeholder="value"
+        type="number"
+        inputMode="decimal"
+        step="0.01"
+        min="0"
+        placeholder="0.00"
         value={bill}
-        onChange={(e) => onSetBill(Number(e.target.value))}
+        onChange={(e) => onSetBill(e.target.value === '' ? '' : parseFloat(e.target.value))}
       />
     </div>
   )
@@ -74,7 +77,7 @@ function SelectPercentage({ children, percentage, onSelect }) {
 function Output({ bill, tip }) {
   return (
     <h3>
-      You pay ${bill + tip} (${bill} + ${tip} tip)
+      You pay ${(bill + tip).toFixed(2)} (${bill.toFixed(2)} + ${tip.toFixed(2)} tip)
     </h3>
   )
 }
