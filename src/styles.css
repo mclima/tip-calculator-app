@@ -205,7 +205,7 @@ body {
 }
 
 .output-row.total .output-value {
-  font-size: 28px;
+  font-size: 20px;
 }
 
 .output-row.per-person {
@@ -221,7 +221,7 @@ body {
 }
 
 .output-row.per-person .output-value {
-  font-size: 24px;
+  font-size: 20px;
 }
 
 /* Reset Button */
