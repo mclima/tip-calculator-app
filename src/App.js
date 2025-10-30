@@ -11,27 +11,37 @@ function App() {
 
 function TipCalculator() {
   const [bill, setBill] = useState('')
-  const [percentage, setPercentage] = useState(0)
+  const [percentage, setPercentage] = useState(15)
+  const [people, setPeople] = useState(1)
 
   const tip = (bill * percentage) / 100
+  const total = bill + tip
+  const perPerson = total / people
 
   function handleReset() {
     setBill('')
-    setPercentage(0)
+    setPercentage(15)
+    setPeople(1)
   }
 
   return (
     <div className="tip-container">
-      <h1>Calculate Tip</h1>
-      <BillInput bill={bill} onSetBill={setBill} />
-      <SelectPercentage percentage={percentage} onSelect={setPercentage}>
-        Select Tip Percentage
-      </SelectPercentage>
+      <div className="header">
+        <h1>Tip Calculator</h1>
+        <p className="subtitle">Calculate tips and split bills easily</p>
+      </div>
+      
+      <div className="input-section">
+        <BillInput bill={bill} onSetBill={setBill} />
+        <SelectPercentage percentage={percentage} onSelect={setPercentage} />
+        <PeopleInput people={people} onSetPeople={setPeople} />
+      </div>
+
       {bill > 0 && (
-        <>
-          <Output bill={bill} tip={tip} />
+        <div className="results-section">
+          <Output bill={bill} tip={tip} total={total} perPerson={perPerson} people={people} />
           <Reset onReset={handleReset} />
-        </>
+        </div>
       )}
     </div>
   )
@@ -39,25 +49,28 @@ function TipCalculator() {
 
 function BillInput({ bill, onSetBill }) {
   return (
-    <div>
-      <label>How much was the bill?</label>
-      <input
-        type="number"
-        inputMode="decimal"
-        step="0.01"
-        min="0"
-        placeholder="0.00"
-        value={bill}
-        onChange={(e) => onSetBill(e.target.value === '' ? '' : parseFloat(e.target.value))}
-      />
+    <div className="input-group">
+      <label>Bill Amount</label>
+      <div className="input-wrapper">
+        <span className="currency-symbol">$</span>
+        <input
+          type="number"
+          inputMode="decimal"
+          step="1.00"
+          min="0"
+          placeholder="0.00"
+          value={bill}
+          onChange={(e) => onSetBill(e.target.value === '' ? '' : parseFloat(e.target.value))}
+        />
+      </div>
     </div>
   )
 }
 
-function SelectPercentage({ children, percentage, onSelect }) {
+function SelectPercentage({ percentage, onSelect }) {
   return (
-    <div className="select-container">
-      <label>{children}</label>
+    <div className="input-group">
+      <label>Tip Percentage</label>
       <div className="select-wrapper">
         <select
           value={percentage}
@@ -67,18 +80,51 @@ function SelectPercentage({ children, percentage, onSelect }) {
           <option value="5">5%</option>
           <option value="10">10%</option>
           <option value="15">15%</option>
+          <option value="18">18%</option>
           <option value="20">20%</option>
+          <option value="25">25%</option>
         </select>
       </div>
     </div>
   )
 }
 
-function Output({ bill, tip }) {
+function PeopleInput({ people, onSetPeople }) {
   return (
-    <h3>
-      You pay ${(bill + tip).toFixed(2)} (${bill.toFixed(2)} + ${tip.toFixed(2)} tip)
-    </h3>
+    <div className="input-group">
+      <label>Number of People</label>
+      <input
+        type="number"
+        min="1"
+        value={people}
+        onChange={(e) => onSetPeople(e.target.value === '' ? 1 : parseInt(e.target.value))}
+      />
+    </div>
+  )
+}
+
+function Output({ bill, tip, total, perPerson, people }) {
+  return (
+    <div className="output">
+      <div className="output-row">
+        <span className="output-label">Bill Amount:</span>
+        <span className="output-value">${bill.toFixed(2)}</span>
+      </div>
+      <div className="output-row">
+        <span className="output-label">Tip Amount:</span>
+        <span className="output-value">${tip.toFixed(2)}</span>
+      </div>
+      <div className="output-row total">
+        <span className="output-label">Total:</span>
+        <span className="output-value">${total.toFixed(2)}</span>
+      </div>
+      {people > 1 && (
+        <div className="output-row per-person">
+          <span className="output-label">Per Person:</span>
+          <span className="output-value">${perPerson.toFixed(2)}</span>
+        </div>
+      )}
+    </div>
   )
 }
 
